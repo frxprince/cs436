@@ -1,12 +1,20 @@
 package com.drpaween.cameraxxxx
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.*
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import kotlinx.android.synthetic.main.activity_main.*
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
 
 class MainActivity : AppCompatActivity() {
      var bitmap:Bitmap?=null
@@ -36,5 +44,27 @@ class MainActivity : AppCompatActivity() {
      startActivityForResult(i,1234)
 
  }
+ if(ActivityCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)!=
+         PackageManager.PERMISSION_GRANTED)
+  ActivityCompat.requestPermissions(this,
+      arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),123)
+
+button2.setOnClickListener {
+    if(bitmap!=null){
+        var file= File(Environment.getExternalStorageDirectory().path+"/DCIM/hello.png")
+        file.createNewFile()
+        var bos=ByteArrayOutputStream()
+        bitmap!!.compress(Bitmap.CompressFormat.PNG,99,bos)
+        var fos=FileOutputStream(file)
+        fos.write(bos.toByteArray())
+        fos.flush()
+        fos.close()
+        Toast.makeText(this, "The image is saved!", Toast.LENGTH_LONG).show()
+    }
+}
+
+
+
+
     }
 }
